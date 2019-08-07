@@ -1,5 +1,6 @@
 import React from 'react';
 import image from './assets/bond_approve.jpg';
+import TextField from './TextField';
 
 class Form extends React.Component {
     state = {
@@ -17,37 +18,59 @@ class Form extends React.Component {
         errorMessageForName: '',
         errorMessageForLastName: '',
         errorMessageForPassword: '',
-        [e.target.name]: e.target.value 
+        [e.target.name]: e.target.value
       })
     };
 
     handleSubmit = (e) => {
       e.preventDefault();
+      this.checkInputValues(this.convertValuesToLowerCase());
+    };
+    
+    convertValuesToLowerCase = () => {
+      const {firstName, lastName, password} = this.state;
+      var inputValues = {
+        firstName: firstName,
+        lastName: lastName,
+        password: password
+      };
+      for (let valueProperty in inputValues) {
+        inputValues[valueProperty] = inputValues[valueProperty].toLowerCase()
+        console.log(valueProperty + ': ' + inputValues[valueProperty]);
+      }
+      return inputValues
+    }
 
-      if (this.state.firstName === '') {
+    checkInputValues = (valuesObject) => {
+      
+      var inputValues = valuesObject;
+
+      if (inputValues.firstName === '') {
         this.setState({ errorMessageForName: 'Нужно указать имя' })
-      } else if (this.state.firstName !== 'James') {
+      } else if (inputValues.firstName !== 'james') {
         this.setState({ errorMessageForName: 'Имя указано не верно' })
       } else { console.log('name is correct')}
       
-      if (this.state.lastName === '') {
+      if (inputValues.lastName === '') {
         this.setState({ errorMessageForLastName: 'Нужно указать фамилию' })
-      } else if (this.state.lastName !== 'Bond') {
+      } else if (inputValues.lastName !== 'bond') {
         this.setState({ errorMessageForLastName: 'Фамилия указана не верно' })
       } else { console.log('lastname is correct') }
       
-      if (this.state.password === '') {
+      if (inputValues.password === '') {
         this.setState({ errorMessageForPassword: 'Нужно указать пароль' })
-      } else if (this.state.password !== '007') {
+      } else if (inputValues.password !== '007') {
         this.setState({ errorMessageForPassword: 'Пароль указан не верно' })
       } else {
         console.log('password is correct')
       }
 
-      if (this.state.firstName === 'James' && this.state.lastName === 'Bond' && this.state.password === '007') {
+      if (inputValues.firstName === 'james' && inputValues.lastName === 'bond' && inputValues.password === '007') {
           this.setState({ isDataCorrect: true }) 
       }
-    };
+
+    }
+
 
     render() {
 
@@ -55,37 +78,37 @@ class Form extends React.Component {
 
       return (
       <div className="app-container">
-        { isDataCorrect ? <img src={image}/>
+        { isDataCorrect ? <img src={image} alt='james_bond' className='t-bond-image'/>
         : <form className="form">
 
         <h1>Введите свои данные, агент</h1>
 
-        <p key="firstName" className="field">
-            <label className="field__label" htmlFor="firstname">
-            <span className="field-label">Имя:</span>
-            </label> 
+        <TextField 
+          inputKey="firstName"
+          label="Имя"
+          onChange={this.handleInputChange}
+          value={firstName}
+          inputClassName="field__input field-input t-input-firstname"
+          spanClassName="field__error field-error t-error-firstname"
+          errorMessage={errorMessageForName}/>
 
-            <input type="text" name="firstName" value={firstName} className="field__input field-input t-input-firstname" onChange={this.handleInputChange} />
-            <span className="field__error field-error t-error-firstname">{errorMessageForName}</span>
-        </p>
+        <TextField 
+          inputKey="lastName"
+          label="Фамилия"
+          onChange={this.handleInputChange}
+          value={lastName}
+          inputClassName="field__input field-input t-input-lastname"
+          spanClassName="field__error field-error t-error-lastname"
+          errorMessage={errorMessageForLastName}/>
 
-        <p key="lastName" className="field">
-            <label className="field__label" htmlFor="lastname">
-            <span className="field-label">Фамилия:</span>
-            </label> 
-
-            <input type="text" name="lastName" value={lastName} className="field__input field-input t-input-lastname" onChange={this.handleInputChange} />
-            <span className="field__error field-error t-error-lastname">{errorMessageForLastName}</span>
-        </p>
-
-        <p key="password" className="field">
-            <label className="field__label" htmlFor="password">
-            <span className="field-label">Пароль:</span>
-            </label> 
-
-            <input type="text" name="password" value={password} className="field__input field-input t-input-password" onChange={this.handleInputChange} />
-            <span className="field__error field-error t-error-password">{errorMessageForPassword}</span>
-        </p>
+        <TextField 
+          inputKey="password"
+          label="Пароль"
+          onChange={this.handleInputChange}
+          value={password}
+          inputClassName="field__input field-input t-input-password"
+          spanClassName="field__error field-error t-error-password"
+          errorMessage={errorMessageForPassword}/>
 
         <div className="form__buttons">
           <input type="submit" className="button t-submit" value="Проверить" onClick={this.handleSubmit}></input>
